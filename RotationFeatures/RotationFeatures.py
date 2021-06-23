@@ -52,7 +52,7 @@ class RotationFeatures():
 			
 		self.scaler_ = MinMaxScaler()
 		scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(X), columns=X.columns)                        
-		#X = np.array(X)
+		display(scaled_X_df)
 			
 		new_feat_idx = 0
 		for c1_idx in range(len(self.X_df.columns)-1):
@@ -66,12 +66,16 @@ class RotationFeatures():
 
 					new_col_name = "R_" + str(new_feat_idx)
 					new_feat_idx += 1
-					X_new[new_col_name] = rotated_df[0]
+					X_new[new_col_name] = rotated_df[0].values
+					print("new column:")
+					display(X_new[new_col_name])
 					self.feature_sources_.append((c1_idx, c2_idx, d, 0))
 
 					new_col_name = "R_" + str(new_feat_idx)
 					new_feat_idx += 1
-					X_new[new_col_name] = rotated_df[1]
+					X_new[new_col_name] = rotated_df[1].values
+					print("new column:")
+					display(X_new[new_col_name])
 					self.feature_sources_.append((c1_idx, c2_idx, d, 1))
 		self.feature_names_ = list(X_new.columns)
 		X_new = X_new.fillna(0.0)
@@ -97,24 +101,41 @@ class RotationFeatures():
 		return self
 
 	def __rotate_data(self, X, col1, col2, degrees):
-		# Create the rotation matrix
-		theta = np.radians(degrees)
-		r = np.array(( (np.cos(theta), -np.sin(theta)),
-					   (np.sin(theta),  np.cos(theta)) ))
+		# # Create the rotation matrix
+		# theta = np.radians(degrees)
+		# r = np.array(( (np.cos(theta), -np.sin(theta)),
+		# 			   (np.sin(theta),  np.cos(theta)) ))
 
 		# Get the specified columns and rotate them
 		col_names = [X.columns[col1], X.columns[col2]]
 		orig_data = X[col_names]
-		rotated_data = r.dot(orig_data.T)    
-		rotated_data_df = pd.DataFrame(rotated_data).T
-		
-		return rotated_data_df    
+		# rotated_data = r.dot(orig_data.T)    
+		# rotated_data_df = pd.DataFrame(rotated_data).T		
+		# return rotated_data_df    
 
+		def rotate_point(x ,y, degrees):
+			# todo: we need to specify a point to rotate around instead of the origin I think.
+			theta = np.radians(degrees)
+			xx = x * cos(theta) - y * sin(theta) # todo: for consistency use np instead of math
+			yy = x * sin(theta) + y * cos(theta)
+			print(x, ",", y, ",", xx, ",", yy)
+			return xx,yy
+
+		rotated_data_arr = []
+		for row_idx in range(len(orig_data)):
+			row = orig_data.iloc[row_idx]
+			rotated_data_arr.append(rotate_point(row[0], row[1], degrees))
+
+		rotated_data_df = pd.DataFrame(rotated_data_arr)
+		display(rotated_data_df)
+		return rotated_data_df
 
 class GraphTwoDimTree():
 	def __init__(self):
 		pass
 
+	# todo: add code to show a row
+	# todo: respect the show_log_scale option
 	def graph_tree(self, tree, X_orig, X_extended, y, class_arr, node_indexes, feature_sources, scaler, row=None, show_log_scale=False): 
 		# Graph each node one at a time			
 		for node_idx in range(len(tree.feature)):
@@ -126,7 +147,7 @@ class GraphTwoDimTree():
 	def graph_node(self, node_idx, tree, X_orig, X_extended, y, class_arr, node_indexes, feature_sources, scaler, row=None, show_log_scale=False):
 		assert len(feature_sources) == len(X_extended.columns), "Length of feature_sources is " + str(len(feature_sources)) + " but number of columns in X_extended is " + str(len(X_extended.columns))
 
-		print("node_idx: ", node_idx)
+		#print("node_idx: ", node_idx)
 		
 		def add_caption(ax, caption_text):
 			ax.text(.1,-.2, caption_text, fontsize=12, transform=ax.transAxes)
@@ -221,12 +242,6 @@ class GraphTwoDimTree():
 								 label=class_name)
 					ax.axhline(threshold, color='k', linestyle='dashed', linewidth=1)                            
 
-				ax.scatter( X_curr_class[X_curr_class.columns[orig_feat1]],  \
-							X_curr_class[X_curr_class.columns[orig_feat2]], \
-							alpha=get_alpha(len(local_df)), \
-							c=tableau_palette_list[class_idx], \
-							marker="s")
-
 			ax.set_title("Engineered Features: " + eng_feat1_name + ", " + eng_feat2_name + "\n(" + orig_feat1_name + ", " + orig_feat2_name + "\nRotated counter-clockwise " + str(degrees) + " Degrees)")
 			ax.legend()   
 			
@@ -279,19 +294,19 @@ class GraphTwoDimTree():
 
 				# We're now, after inverse rotation, in the space of the 2 original columns scaled. We next get the
 				# inverse scaling. 
-				scaled_data = X_orig.iloc[:2] # Take an arbitary pair of rows and replace the 2 columns we're interested in inverse scaling.
-				scaled_data.iloc[0][orig_feat1_name] = rotated_x1
-				scaled_data.iloc[0][orig_feat2_name] = rotated_y1
-				scaled_data.iloc[1][orig_feat1_name] = rotated_x2
-				scaled_data.iloc[1][orig_feat2_name] = rotated_y2
+				# scaled_data = X_orig.iloc[:2] # Take an arbitary pair of rows and replace the 2 columns we're interested in inverse scaling.
+				# scaled_data.iloc[0][orig_feat1_name] = rotated_x1
+				# scaled_data.iloc[0][orig_feat2_name] = rotated_y1
+				# scaled_data.iloc[1][orig_feat1_name] = rotated_x2
+				# scaled_data.iloc[1][orig_feat2_name] = rotated_y2
 				#print("scaled_data: ")
 				#display(scaled_data)
-				rev = scaler.inverse_transform(scaled_data)
-				#print("rev", rev)
-				scaled_x1 = rev[0][orig_feat1]
-				scaled_y1 = rev[0][orig_feat2]
-				scaled_x2 = rev[1][orig_feat1]
-				scaled_y2 = rev[1][orig_feat2]                    
+				# rev = scaler.inverse_transform(scaled_data)
+				# #print("rev", rev)
+				# scaled_x1 = rev[0][orig_feat1]
+				# scaled_y1 = rev[0][orig_feat2]
+				# scaled_x2 = rev[1][orig_feat1]
+				# scaled_y2 = rev[1][orig_feat2]                    
 				#print("after reverse scaling points: ", scaled_x1, scaled_y1, scaled_x2, scaled_y2)
 
 				# todo: extend the line so it covers the full extent of the axes
@@ -312,7 +327,7 @@ class GraphTwoDimTree():
 		
 		# Render internal nodes
 		if feature_idx >= 0:
-			fig, ax = plt.subplots(nrows=1, ncols=5, figsize=(25,5))
+			fig, ax = plt.subplots(nrows=1, ncols=6, figsize=(25,5))
 			
 			# In the first plot, show a bar chart giving the count for each target class
 			graph_bar_chart_classes(ax[0], is_leaf=False)
@@ -327,9 +342,51 @@ class GraphTwoDimTree():
 			# In the 4th and 5th plots, if applicable (if the feature is based on the rotation of 2 other features),
 			# show a scatter plot of the two original and the two generated (rotated) features.
 			if feature_idx >= num_original_cols: 
+				rotated_x1, rotated_y1, rotated_x2, rotated_y2 = [], [], [],[] # temp!! remove
+
 				graph_scatter_engineered_features(ax[3])
 				# The 5th plot shows the 2d space of the 2 original features before they were rotated
 				graph_scatter_original_features(ax[4])
+
+				#TEMP 6th plot -- the original features scaled. just for debugging.
+				orig_feat1, orig_feat2, degrees, side = feature_sources[feature_idx]
+				orig_feat1_name = str(X_extended.columns[orig_feat1]) 
+				orig_feat2_name = str(X_extended.columns[orig_feat2])
+				X_scaled = pd.DataFrame(scaler.transform(X_orig), columns=X_orig.columns, index=X_orig.index)
+				X_local_scaled = X_scaled.loc[local_df.index]
+				if side == 0: 
+					other_feature = feature_idx+1
+				else:
+					other_feature = feature_idx-1
+
+				for class_idx, class_name in enumerate(class_arr):
+					match_ids = (local_y==class_name).values.reshape(1,-1)[0]
+					idx_arr = local_y.loc[match_ids].index
+					X_curr_class = X_local_scaled.loc[idx_arr]                        
+					ax[5].scatter(X_curr_class[X_curr_class.columns[orig_feat1]], 
+								  X_curr_class[X_curr_class.columns[orig_feat2]], 
+								  alpha=get_alpha(len(local_df)), 
+								  c=tableau_palette_list[class_idx], 
+								  label=class_name)
+
+					X_curr_class = local_df.loc[idx_arr]
+					if side == 0:
+						ax[5].scatter( X_curr_class[X_curr_class.columns[feature_idx]],  \
+							X_curr_class[X_curr_class.columns[other_feature]], \
+							alpha=get_alpha(len(local_df)), \
+							c=tableau_palette_list[class_idx], \
+							marker="s")
+					else:
+						ax[5].scatter( X_curr_class[X_curr_class.columns[other_feature]],  \
+							X_curr_class[X_curr_class.columns[feature_idx]], \
+							alpha=get_alpha(len(local_df)), \
+							c=tableau_palette_list[class_idx], \
+							marker="s")
+
+				#ax[5].plot([rotated_x1, rotated_x2], [rotated_y1, rotated_y2], c="k", )
+				ax[5].set_title("Source Features scaled:\n" + orig_feat1_name + ", " + orig_feat2_name)
+				ax[5].legend()
+
 			else:
 				ax[3].set_visible(False)
 				ax[4].set_visible(False)
