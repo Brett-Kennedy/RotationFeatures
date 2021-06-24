@@ -150,7 +150,7 @@ class GraphTwoDimTree():
 		#print("node_idx: ", node_idx)
 		
 		def add_caption(ax, caption_text):
-			ax.text(.1,-.2, caption_text, fontsize=12, transform=ax.transAxes)
+			ax.text(.1,-.2, caption_text, fontsize=12, transform=ax.transAxes, linespacing=1.5)
 
 		def graph_bar_chart_classes(ax, is_leaf):
 			b = ax.bar(class_arr, class_counts, color=tableau_palette_list)
