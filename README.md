@@ -176,4 +176,4 @@ Overall, both the toy and the real (publicly-available) datasets showed some imp
 
 Testing was done using DatasetsEvaluator, which allows for large-scale unbiased evaluation of tools on publicly-avaliable datasets, and this found a noticable improvement in accuracy and/or interpretability for numerous datasets. Overall accuracy was similar with and without RotationFeatures, demonstrating it is also often not useful. 
 
-RotationFeatures is not intended, in itself, to make Decision Trees and other interpretable models competitive with other models in terms of accuracy, though may in many cases make them 
+RotationFeatures is not intended, in itself, to make Decision Trees and other interpretable models competitive with other models in terms of accuracy, though may in many cases make them comparable. The intention is simply to increase the accuracy and interpretability of interpretable models. 

@@ -16,6 +16,19 @@ class RotationFeatures():
 		self.max_cols_created = max_cols_created 
 
 	def fit(self, X):
+		'''
+		fit() simply determines the number of features that will be generated. As the new features are based
+		on rotations, they do not depend on any specific data that must be fit to. 
+
+		Parameters
+		----------
+		X: matrix
+
+		Returns
+		-------
+		Returns self. 
+		'''
+
 		X=np.array(X)
 		self.X = X
 		self.X_df = pd.DataFrame(X) 
@@ -34,12 +47,25 @@ class RotationFeatures():
 			self.n_numeric_input_features_ = self.n_input_features_
 
 		# Determine the number of features that will be created.
-		# We look at each pair of numeric features (ie, n(n-1)/2 pairs), for each creating 2 new features for each rotation.
+		# We look at each pair of numeric features (i.e., n(n-1)/2 pairs), for each creating 2 new features for each rotation.
 		self.n_output_features_ = self.n_numeric_input_features_ * (self.n_numeric_input_features_-1) * len(self.degrees_array)
 
 		return self
 
 	def transform(self, X):
+		'''
+		
+		Parameters
+		----------
+		X: matrix
+
+		Returns
+		-------
+		Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well 
+		as the additional columns created. 
+
+		'''
+
 		X_new = pd.DataFrame(X).copy()
 		assert len(X_new.columns) == self.n_input_features_
 		self.feature_sources_ = [()]*self.n_input_features_
@@ -52,7 +78,6 @@ class RotationFeatures():
 			
 		self.scaler_ = MinMaxScaler()
 		scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(X), columns=X.columns)                        
-		display(scaled_X_df)
 			
 		new_feat_idx = 0
 		for c1_idx in range(len(self.X_df.columns)-1):
@@ -67,15 +92,11 @@ class RotationFeatures():
 					new_col_name = "R_" + str(new_feat_idx)
 					new_feat_idx += 1
 					X_new[new_col_name] = rotated_df[0].values
-					print("new column:")
-					display(X_new[new_col_name])
 					self.feature_sources_.append((c1_idx, c2_idx, d, 0))
 
 					new_col_name = "R_" + str(new_feat_idx)
 					new_feat_idx += 1
 					X_new[new_col_name] = rotated_df[1].values
-					print("new column:")
-					display(X_new[new_col_name])
 					self.feature_sources_.append((c1_idx, c2_idx, d, 1))
 		self.feature_names_ = list(X_new.columns)
 		X_new = X_new.fillna(0.0)
@@ -83,13 +104,41 @@ class RotationFeatures():
 		return X_new    
 
 	def fit_transform(self, X, y=None, **fit_params):
+		'''
+		Calls fit() and transform()
+
+		Parameters
+		----------
+		X: matrix
+
+		y: Unused
+
+		fit_params: Unused
+
+		Returns
+		-------
+		Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well 
+		as the additional columns created. 
+		'''
+
 		self.fit(X)
 		return self.transform(X) 
 
 	def get_feature_names(self):
+		'''
+		Returns the list of column names. This includes the original columns and the generated columns. The 
+		generated columns have names of the form: "R_" followed by a count. The generated columns have little
+		meaning in themselves except as described as a rotation of two original features. 
+		'''
+
 		return self.feature_names_ 
 
 	def get_feature_sources(self):
+		'''
+		Returns the list of column sources. This has an element for each column. For the original columns, this is empty and
+		for generated columns, this lists the pair of original columns from which it was generated. 
+		'''
+
 		return self.feature_sources_
 
 	def get_params(self, deep=True):		
@@ -118,7 +167,7 @@ class RotationFeatures():
 			theta = np.radians(degrees)
 			xx = x * cos(theta) - y * sin(theta) # todo: for consistency use np instead of math
 			yy = x * sin(theta) + y * cos(theta)
-			print(x, ",", y, ",", xx, ",", yy)
+			#print(x, ",", y, ",", xx, ",", yy)
 			return xx,yy
 
 		rotated_data_arr = []
@@ -127,24 +176,75 @@ class RotationFeatures():
 			rotated_data_arr.append(rotate_point(row[0], row[1], degrees))
 
 		rotated_data_df = pd.DataFrame(rotated_data_arr)
-		display(rotated_data_df)
+		#display(rotated_data_df)
 		return rotated_data_df
 
 class GraphTwoDimTree():
+	'''
+	This generates a series of plots describing an sklearn decision tree generated with either the original featues
+	or the features generated using RotationFeatures. 
+	'''
 	def __init__(self):
 		pass
 
 	# todo: add code to show a row
 	# todo: respect the show_log_scale option
 	def graph_tree(self, tree, X_orig, X_extended, y, class_arr, node_indexes, feature_sources, scaler, row=None, show_log_scale=False): 
+		'''
+		Graphs all nodes of the tree. Each node is represented by a row of plots, each describing the node in a different manner.
+
+		Parameters
+		----------
+		tree
+
+		X_orig
+
+		X_extended
+
+		y
+
+		class_arr
+
+		node_indexes
+
+		feature_sources
+
+		scaler
+
+		row
+
+		show_log_scale: bool
+
+		Returns
+		-------
+		'''
+
 		# Graph each node one at a time			
 		for node_idx in range(len(tree.feature)):
 			self.graph_node(node_idx, tree, X_orig, X_extended, y, class_arr, node_indexes, feature_sources, scaler, row, show_log_scale)
 		
 	def graph_decision_path(self):
+		'''
+
+		Parameters
+		----------
+
+		Returns
+		-------
+		'''
+
 		pass #todo: fill in
 
 	def graph_node(self, node_idx, tree, X_orig, X_extended, y, class_arr, node_indexes, feature_sources, scaler, row=None, show_log_scale=False):
+		'''
+
+		Parameters
+		----------
+
+		Returns
+		-------
+		'''
+
 		assert len(feature_sources) == len(X_extended.columns), "Length of feature_sources is " + str(len(feature_sources)) + " but number of columns in X_extended is " + str(len(X_extended.columns))
 
 		#print("node_idx: ", node_idx)
@@ -210,7 +310,6 @@ class GraphTwoDimTree():
 				
 		def graph_scatter_engineered_features(ax):
 			orig_feat1, orig_feat2, degrees, side = feature_sources[feature_idx]
-			print("orig_feat1, orig_feat2, degrees, side: ", (orig_feat1, orig_feat2, degrees, side))
 			# The column names can occasionally be numbers and not strings, so cast to strings.
 			orig_feat1_name = str(X_extended.columns[orig_feat1]) 
 			orig_feat2_name = str(X_extended.columns[orig_feat2])
@@ -226,7 +325,7 @@ class GraphTwoDimTree():
 				match_ids = (local_y==class_name).values.reshape(1,-1)[0]
 				idx_arr = local_y.loc[match_ids].index
 				X_curr_class = local_df.loc[idx_arr]  
-				print("engineerd features. class: ", class_idx, ", ", class_name, ", len: ", len(X_curr_class))
+				#print("engineerd features. class: ", class_idx, ", ", class_name, ", len: ", len(X_curr_class))
 				if (side == 0):                      
 					ax.scatter(   X_curr_class[X_curr_class.columns[feature_idx]], 
 								  X_curr_class[X_curr_class.columns[other_feature]], 
@@ -267,7 +366,7 @@ class GraphTwoDimTree():
 				match_ids = (local_y==class_name).values.reshape(1,-1)[0]
 				idx_arr = local_y.loc[match_ids].index
 				X_curr_class = local_df.loc[idx_arr]                        
-				print("original features. class: ", class_idx, ", ", class_name, ", len: ", len(X_curr_class))
+				#print("original features. class: ", class_idx, ", ", class_name, ", len: ", len(X_curr_class))
 				ax.scatter( X_curr_class[X_curr_class.columns[orig_feat1]],  \
 							X_curr_class[X_curr_class.columns[orig_feat2]], \
 							alpha=get_alpha(len(local_df)), \
