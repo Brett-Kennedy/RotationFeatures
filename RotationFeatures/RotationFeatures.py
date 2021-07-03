@@ -9,7 +9,12 @@ from matplotlib.ticker import ScalarFormatter, MaxNLocator
 from IPython.core.display import display, HTML
 
 class RotationFeatures():
-	
+	"""
+	Feature generation tool based on rotating pairs of numeric featuers verious numbers of degrees,
+	thereby creating new 2d spaces that may be split by axis-parallel cuts, allowing more effective
+	rules to be induced on the data. 
+	"""
+
 	def __init__(self, degree_increment=30, determine_numeric_features=True, max_cols_created=np.inf):
 		self.degree_increment = degree_increment
 		self.determine_numeric_features = determine_numeric_features
@@ -250,7 +255,7 @@ class GraphTwoDimTree():
 		#print("node_idx: ", node_idx)
 		
 		def add_caption(ax, caption_text):
-			ax.text(.1,-.2, caption_text, fontsize=12, transform=ax.transAxes)
+			ax.text(.1,-.2, caption_text, fontsize=12, transform=ax.transAxes, linespacing=1.5)
 
 		def graph_bar_chart_classes(ax, is_leaf):
 			b = ax.bar(class_arr, class_counts, color=tableau_palette_list)
