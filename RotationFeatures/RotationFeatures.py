@@ -261,7 +261,7 @@ class GraphTwoDimTree():
 			b = ax.bar(class_arr, class_counts, color=tableau_palette_list)
 			title = "Counts of target classes"
 			if is_leaf:
-				title = "(Leaf Node)" + title
+				title = "(Leaf Node) " + title
 			ax.set_title(title)
 			ylim = ax.get_ylim()
 			ax.set_ylim(ylim[0], ylim[1]*1.1) 
@@ -432,6 +432,7 @@ class GraphTwoDimTree():
 		# Render internal nodes
 		if feature_idx >= 0:
 			fig, ax = plt.subplots(nrows=1, ncols=6, figsize=(25,5))
+			plt.tight_layout()
 			
 			# In the first plot, show a bar chart giving the count for each target class
 			graph_bar_chart_classes(ax[0], is_leaf=False)
@@ -501,4 +502,5 @@ class GraphTwoDimTree():
 			graph_bar_chart_classes(ax, is_leaf=True)	
 
 		fig.suptitle("Node: " + str(node_idx))
+		plt.subplots_adjust(top=0.8)
 		plt.show()
