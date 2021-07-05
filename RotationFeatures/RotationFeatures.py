@@ -82,7 +82,7 @@ class RotationFeatures():
 					"the maximum specified number of output columns.")
 			
 		self.scaler_ = MinMaxScaler()
-		scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(X), columns=X.columns)                        
+		scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(X_new), columns=X_new.columns)                        
 			
 		new_feat_idx = 0
 		for c1_idx in range(len(self.X_df.columns)-1):
