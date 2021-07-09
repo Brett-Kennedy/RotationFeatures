@@ -101,7 +101,8 @@ class RotationFeatures():
 			raise ValueError (
 					"The number of columns passed would result in greater than "
 					"the maximum specified number of output columns.")
-			
+		
+		# todo: this should be in fit, since the scaling has to be based solely on the training data	
 		self.scaler_ = MinMaxScaler()
 		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)                        
 			
@@ -203,7 +204,7 @@ class RotationFeatures():
 			row = orig_data.iloc[row_idx]
 			rotated_data_arr.append(rotate_point(row[0], row[1], degrees))
 
-		rotated_data_df = pd.DataFrame(rotated_data_arr)
+		rotated_data_df = pd.DataFrame(rotated_data_arr, index=X.index)
 		#display(rotated_data_df)
 		return rotated_data_df
 
@@ -236,6 +237,8 @@ class GraphTwoDimTree():
 		self.rota = rota
 
 		self.feature_sources = self.rota.get_feature_sources()
+		if hasattr(self.tree, "feature_sources"):
+			self.feature_sources = self.tree.feature_sources
 		self.scaler = self.rota.scaler_
 		self.class_arr = list(tree.classes_) 
 		self.node_indexes = self.get_node_indexes()
@@ -262,7 +265,7 @@ class GraphTwoDimTree():
 		for node_idx in range(len(self.tree.tree_.feature)):
 			self.graph_node(node_idx, row=None, show_log_scale=show_log_scale, show_combined_2d_space=show_combined_2d_space)
 		
-	def graph_decision_path(self, row=None, show_log_scale=False):
+	def graph_decision_path(self, row=None, show_log_scale=False, show_combined_2d_space=False):
 		'''
 
 		Parameters
@@ -271,9 +274,32 @@ class GraphTwoDimTree():
 		Returns
 		-------
 		'''
+		assert not row is None
 		decision_path = self.tree.decision_path([row])
+		print(f"Decision Path: {decision_path.indices}")
+		for node_idx in decision_path.indices:
+			self.graph_node(node_idx, row=row, show_log_scale=show_log_scale, show_combined_2d_space=show_combined_2d_space)
 
-		pass #todo: fill in
+	def graph_incorrect_rows(self, X, y, y_pred, max_rows_shown, show_log_scale=False, show_combined_2d_space=False):
+		'''
+
+		Parameters
+		----------
+
+		Returns
+		-------
+		'''
+		assert len(X) == len(y) and len(X) == len(y_pred)
+
+		wrong_mask = [x!=y for x,y in zip(y, y_pred)]
+		row_num_list = [i for i, value in enumerate(wrong_mask) if value == True][:max_rows_shown]
+		print(f"Number of rows: {len(X)}. Number of incorrect: {len(row_num_list)}. Percent incorrect: {round(len(row_num_list)*100.0/len(X))}")
+		for i in row_num_list:
+			idx = X.iloc[i:i+1].index[0]
+			print("\n\n****************************************************************")
+			print(f"Displaying decision path for row {idx}. Predicted: {y_pred[i]}. Actual: {y.iloc[i]}")
+			print("****************************************************************")
+			self.graph_decision_path(row=X.loc[idx], show_log_scale=show_log_scale, show_combined_2d_space=show_combined_2d_space)
 
 
 	def get_node_indexes(self):
@@ -388,11 +414,14 @@ class GraphTwoDimTree():
 							 label=class_name)
 				ax.axhline(threshold, color='k', linestyle='dashed', linewidth=1)                            
 
-		#todo: draw the row in this 2d space too
 		if side == 0:
 			ax.set_title("Engineered Features: " + eng_feat1_name + ", " + eng_feat2_name + "\n(" + orig_feat1_name + ", " + orig_feat2_name + "\nRotated counter-clockwise " + str(degrees) + " Degrees)")
+			if (not row is None): 
+				ax.plot(row[feature_idx], row[other_feature], marker="*", markersize=15, markeredgecolor="red", markerfacecolor="red")
 		else:
 			ax.set_title("Engineered Features: " + eng_feat2_name + ", " + eng_feat1_name + "\n(" + orig_feat1_name + ", " + orig_feat2_name + "\nRotated counter-clockwise " + str(degrees) + " Degrees)")			
+			if (not row is None): 
+				ax.plot(row[other_feature], row[feature_idx], marker="*", markersize=15, markeredgecolor="red", markerfacecolor="red")
 		ax.legend()   
 		
 	def graph_scatter_original_features(self, ax, feature_idx, local_df, local_y, threshold, row, show_scaled=False):
@@ -501,18 +530,16 @@ class GraphTwoDimTree():
 		None
 		'''
 		assert len(self.feature_sources) == len(self.X_extended.columns), "Length of feature_sources is " + str(len(self.feature_sources)) + " but number of columns in X_extended is " + str(len(self.X_extended.columns))
-
-		#print("node_idx: ", node_idx)
-		
+	
 		local_df = self.X_extended.loc[self.node_indexes[node_idx]]
 		local_y = pd.DataFrame(self.y).loc[self.node_indexes[node_idx]]
 		feature_idx = self.tree.tree_.feature[node_idx]
 		feature_name = self.X_extended.columns[feature_idx]
 		threshold = self.tree.tree_.threshold[node_idx]
 		num_original_cols = len(self.X_orig.columns)
-		class_counts = [local_y.values.tolist().count(x) for x in self.class_arr]
+		class_counts = [local_y.values.flatten().tolist().count(x) for x in self.class_arr]
 		
-		# Render internal nodes
+		# Determine the number of plots, the width of the figure, and the indexes of the axes
 		ncols = 1
 		if feature_idx >= 0:
 			ncols = 2
@@ -531,6 +558,7 @@ class GraphTwoDimTree():
 
 		fig_width = ncols * 3.5
 
+		# Render internal nodes
 		if feature_idx >= 0:
 			fig_height = 3.0
 			fig, ax = plt.subplots(nrows=1, ncols=ncols, figsize=(fig_width,fig_height))
