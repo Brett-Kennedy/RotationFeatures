@@ -58,7 +58,7 @@ class RotationFeatures():
 		self.X = np.array(X)
 		self.orig_X = pd.DataFrame(X) 
 		self.extended_X = None
-		self.n_input_features_ = X.shape[1]
+		self.n_input_features_ = self.X.shape[1]
 		self.n_numeric_input_features_ = 0
 		self.n_output_features_ = 0
 		self.degrees_array = list(range(self.degree_increment, 90, self.degree_increment))
@@ -91,7 +91,7 @@ class RotationFeatures():
 		as the additional columns created. 
 
 		'''
-		self.orig_X = X
+		self.orig_X = pd.DataFrame(X)
 		extended_X = pd.DataFrame(X).copy()
 		assert len(extended_X.columns) == self.n_input_features_
 		self.feature_sources_ = [()]*self.n_input_features_
@@ -114,7 +114,12 @@ class RotationFeatures():
 				if (self.is_numeric_arr[c2_idx] == 0):
 					continue
 				for d in self.degrees_array:
-					rotated_df = self.rotate_data(self.scaled_X_df, c1_idx, c2_idx, d)
+					rotated_df_old = self.rotate_data(self.scaled_X_df, c1_idx, c2_idx, d)
+					#print("one row method. # rows: ", len(rotated_df))
+					#display(rotated_df.head())
+					rotated_df = self.rotate_data2(self.scaled_X_df, c1_idx, c2_idx, d)
+					#print("dot method. # rows: ", len(rotated_df_dot))
+					#display(rotated_df_dot.head())
 
 					new_col_name = "R_" + str(new_feat_idx)
 					new_feat_idx += 1
@@ -208,6 +213,21 @@ class RotationFeatures():
 		#display(rotated_data_df)
 		return rotated_data_df
 
+	def rotate_data2(self, X, col1, col2, degrees):
+		# todo: do this as a dot product, not one row at a time. that was working before.
+
+		# # Create the rotation matrix
+		theta = np.radians(degrees)
+		r = np.array(( (np.cos(theta), -np.sin(theta)),
+					   (np.sin(theta),  np.cos(theta)) ))
+
+		# Get the specified columns and rotate them
+		col_names = [X.columns[col1], X.columns[col2]]
+		orig_data = X[col_names]
+		rotated_data = r.dot(orig_data.T)    
+		rotated_data_df = pd.DataFrame(rotated_data).T		
+		rotated_data_df.index = X.index
+		return rotated_data_df    
 
 
 class GraphTwoDimTree():
