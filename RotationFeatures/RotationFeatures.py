@@ -65,6 +65,9 @@ class RotationFeatures():
 		self.is_numeric_arr = []
 		self.feature_names_ = []		
 		
+		self.scaler_ = MinMaxScaler()
+		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)      
+		
 		# Determine which features may be considered numeric
 		if self.determine_numeric_features:
 			self.is_numeric_arr = [1 if is_numeric_dtype(self.orig_X[self.orig_X.columns[c]]) and (self.orig_X[self.orig_X.columns[c]].nunique()>2) else 0 for c in range(len(self.orig_X.columns))]
@@ -75,9 +78,6 @@ class RotationFeatures():
 		# Determine the number of features that will be created.
 		# We look at each pair of numeric features (i.e., n(n-1)/2 pairs), for each creating 2 new features for each rotation.
 		self.n_output_features_ = self.n_numeric_input_features_ * (self.n_numeric_input_features_-1) * len(self.degrees_array)
-
-		self.scaler_ = MinMaxScaler()
-		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)   
 		
 		return self
 
