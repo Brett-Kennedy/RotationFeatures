@@ -76,6 +76,9 @@ class RotationFeatures():
 		# We look at each pair of numeric features (i.e., n(n-1)/2 pairs), for each creating 2 new features for each rotation.
 		self.n_output_features_ = self.n_numeric_input_features_ * (self.n_numeric_input_features_-1) * len(self.degrees_array)
 
+		self.scaler_ = MinMaxScaler()
+		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)   
+		
 		return self
 
 	def transform(self, X):
@@ -100,11 +103,7 @@ class RotationFeatures():
 		if self.n_output_features_ > self.max_cols_created:
 			raise ValueError (
 					"The number of columns passed would result in greater than "
-					"the maximum specified number of output columns.")
-		
-		# todo: this should be in fit, since the scaling has to be based solely on the training data	
-		self.scaler_ = MinMaxScaler()
-		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)                        
+					"the maximum specified number of output columns.")                     
 			
 		new_feat_idx = 0
 		for c1_idx in range(len(self.orig_X.columns)-1):
@@ -199,8 +198,8 @@ class RotationFeatures():
 		def rotate_point(x ,y, degrees):
 			# todo: we need to specify a point to rotate around instead of the origin I think.
 			theta = np.radians(degrees)
-			xx = x * cos(theta) - y * sin(theta) # todo: for consistency use np instead of math
-			yy = x * sin(theta) + y * cos(theta)
+			xx = x * np.cos(theta) - y * np.sin(theta) 
+			yy = x * np.sin(theta) + y * np.cos(theta)
 			#print(x, ",", y, ",", xx, ",", yy)
 			return xx,yy
 
@@ -448,8 +447,8 @@ class GraphTwoDimTree():
 		
 		def rotate_point(x ,y, degrees):
 			theta = np.radians(degrees)
-			xx = x * cos(theta) - y * sin(theta) # todo: for consistency use np instead of math
-			yy = x * sin(theta) + y * cos(theta)
+			xx = x * np.cos(theta) - y * np.sin(theta) 
+			yy = x * np.sin(theta) + y * np.cos(theta)
 			return xx,yy
 
 		if show_scaled:
