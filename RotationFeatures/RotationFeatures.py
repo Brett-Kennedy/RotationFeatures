@@ -65,6 +65,9 @@ class RotationFeatures():
 		self.is_numeric_arr = []
 		self.feature_names_ = []		
 		
+		self.scaler_ = MinMaxScaler()
+		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)     
+		
 		# Determine which features may be considered numeric
 		if self.determine_numeric_features:
 			self.is_numeric_arr = [1 if is_numeric_dtype(self.orig_X[self.orig_X.columns[c]]) and (self.orig_X[self.orig_X.columns[c]].nunique()>2) else 0 for c in range(len(self.orig_X.columns))]
@@ -101,10 +104,6 @@ class RotationFeatures():
 			raise ValueError (
 					"The number of columns passed would result in greater than "
 					"the maximum specified number of output columns.")                     
-			
-		# todo: this should be in fit, since the scaling has to be based solely on the training data	
-		self.scaler_ = MinMaxScaler()
-		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)                        
 			
 		new_feat_idx = 0
 		for c1_idx in range(len(self.orig_X.columns)-1):
