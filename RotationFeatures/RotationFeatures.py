@@ -351,6 +351,11 @@ class GraphTwoDimTree():
 		ax.set_title(title)
 		ylim = ax.get_ylim()
 		ax.set_ylim(ylim[0], ylim[1]*1.1) 
+
+		# todo: Liz added: I need to add these back to each plot here
+		# ax.minorticks_off()
+		# ax.tick_params(axis='x', labelrotation=75, direction='in', length=2)
+
 		for idx, rect in enumerate(b):
 			height = rect.get_height()
 			ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
