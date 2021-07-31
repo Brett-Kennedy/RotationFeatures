@@ -515,6 +515,29 @@ class GraphTwoDimTree():
 			#print("after reverse rotation points: ", rotated_x1, rotated_y1, rotated_x2, rotated_y2)
 			if show_scaled:
 				ax.plot([rotated_x1, rotated_x2], [rotated_y1, rotated_y2], c="k", linestyle='dashed', linewidth=1) 
+				rotated_x1, rotated_y1 = rotate_point(min_val - (0.5*range), threshold,  -1*degrees)
+				rotated_x2, rotated_y2 = rotate_point(max_val + (0.5*range), threshold,  -1*degrees)
+				
+				# Liz's attempt at contourf - not currently working
+				X = np.linspace(rotated_x1,rotated_x2)
+				Y = np.linspace(rotated_y1,rotated_y2)
+				X_grid, Y_grid = np.meshgrid(X,Y)
+				clf = KNeighborsClassifier(n_neighbors=8)
+				X = X.reshape(-1,1)
+				Y = Y.reshape(-1,1)
+				clf.fit(X_grid, Y_grid)
+				x_min = ax.get_xlim()[0]
+				x_max = ax.get_xlim()[1]
+				x_step = (x_max-x_min)/100
+				y_min = ax.get_ylim()[0]
+				y_max = ax.get_ylim()[1]
+				y_step = (y_max-y_min)/100   
+				x_mesh, y_mesh = np.meshgrid((np.arange(x_min,x_max,x_step)), (np.arange(y_min,y_max,y_step)))
+				df = pd.DataFrame({"0": x_mesh.reshape(-1), "1": y_mesh.reshape(-1)})
+				mesh_pred = clf.predict(df)
+				Z_grid = mesh_pred.reshape(X_grid.shape)
+				plt.contourf(X_grid, Y_grid, Z_grid)
+#				plt.show()
 
 			# We're now, after inverse rotation, in the space of the 2 generated columns scaled. We next get the
 			# inverse scaling. Take an arbitary pair of rows and replace the 2 columns we're interested in inverse scaling.
