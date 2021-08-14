@@ -4,7 +4,7 @@ RotationFeatures is a feature generation tool that constructs sets of pairs of n
 
 RotationFeatures is designed specifically for interpretable models such as Decision Trees, Decision Tables, Rule Lists and Rule Sets, though may be used with any model type where feature generation may be useful. Though the features generated may have lower comprehensibility than the original features from which they were created, they may be readily visualized, which often supports greater overall interpertability and allows this tool to contribute to the field of eXplainable AI (XAI). 
 
-Although conceptually simple, this tool generates featurs that often improve the accuracy or interpretability of interpretable models. The majority of testing was with decision trees, though this also appears promicing with other rules-based models. It typically does not enhance the accuracy of more complex (and in any case uninterpretable) models such as RandomForests, boosted models, and neural networks. 
+Although conceptually simple, this tool generates features that often improve the accuracy or interpretability of interpretable models. The majority of testing was with decision trees, and all examples below relate to decision trees (arguably among the most interpretable of models), though this also appears promising with other rules-based models. It, however, typically does not enhance the accuracy of more complex (and in any case uninterpretable) models such as RandomForests, boosted models, and neural networks. 
 
 ## Installation
 
