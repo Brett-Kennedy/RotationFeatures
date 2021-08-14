@@ -2,7 +2,9 @@
 
 RotationFeatures is a feature generation tool that constructs sets of pairs of new features based on rotations of existing pairs of features. The tool follows a similar API signature as sklearn's PolynomialFeatures.
 
-RotationFeatures is designed specifically for interpretable models such as Decision Trees, Decision Tables, Rule Lists and Rule Sets, though may be used with any model type where feature generation may be useful. Though the features generated may have lower comprehensibility than the original features from which they were created, they may be readily visualized, which often supports greater overall interpertability and allows this tool to contribute to eXplainable AI (XAI). 
+RotationFeatures is designed specifically for interpretable models such as Decision Trees, Decision Tables, Rule Lists and Rule Sets, though may be used with any model type where feature generation may be useful. Though the features generated may have lower comprehensibility than the original features from which they were created, they may be readily visualized, which often supports greater overall interpertability and allows this tool to contribute to the field of eXplainable AI (XAI). 
+
+Although conceptually simple, this tool generates featurs that often improve the accuracy or interpretability of interpretable models. The majority of testing was with decision trees, though this also appears promicing with other rules-based models. It typically does not enhance the accuracy of more complex (and in any case uninterpretable) models such as RandomForests, boosted models, and neural networks. 
 
 ## Installation
 
