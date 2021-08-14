@@ -62,79 +62,75 @@ avg_test_score = test_scores.mean()
 
 ## RotationFeatures Methods
 
-### fit()
+#### fit()
 
-**Description**
+##### Description
 
-fit() simply determines the number of features that will be generated. As the new features are based on rotations, they do not depend on any specific data that must be fit to. 
+###### fit() simply determines the number of features that will be generated. As the new features are based on rotations, they do not depend on any specific data that must be fit to. 
 
-**Parameters**
-**X**: matrix
+##### Parameters
 
-**Return Type**
+###### X: matrix
 
-Returns self
+##### Return Type
 
---- 
+###### Returns self
+## 
 
-### transform()
+#### transform()
 
-**Description**
-Generates the new features based on the specifed degree_increment.
+##### Description
 
-**Parameters**
+###### Generates the new features based on the specifed degree_increment.
 
-**X**: matrix
+##### Parameters
 
-**Return Type**
+###### X: matrix
 
-Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+##### Return Type
 
---- 
+###### Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+## 
 
-### fit_transform()
+#### fit_transform()
 
-**Description**
+##### Description
 
-Calls fit() and transform()
+###### Calls fit() and transform()
 
-**Parameters**
+##### Parameters
 
-X: matrix
+###### X: matrix
 
-y: Unused
+###### y: Unused
 
-fit_params: Unused
+###### fit_params: Unused
 
-**Return Type**
+##### Return Type
 
-Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+###### Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+## 
 
---- 
+#### get_feature_names()
 
-### get_feature_names()
+####### Returns the list of column names. This includes the original columns and the generated columns. The generated columns have names of the form: "R_" followed by a count. The generated columns have little meaning in themselves except as described as a rotation of two original features. 
+## 
 
-Returns the list of column names. This includes the original columns and the generated columns. The generated columns have names of the form: "R_" followed by a count. The generated columns have little meaning in themselves except as described as a rotation of two original features. 
+#### get_feature_sources()
 
---- 
-
-### get_feature_sources()
-
-Returns the list of column sources. This has an element for each column. For the original columns, this is empty and for generated columns, this lists the pair of original columns from which it was generated. 
-
----
+###### Returns the list of column sources. This has an element for each column. For the original columns, this is empty and for generated columns, this lists the pair of original columns from which it was generated. 
+##
 
 ### get_params()
 
-Returns the degree_increment.
-
---- 
+###### Returns the degree_increment.
+## 
 
 ### set_params()
 
 Accepts degree_increment.
 
---- 
+## 
 
 ## GraphTwoDimTree Methods
 
@@ -147,7 +143,7 @@ Accepts degree_increment.
 
 **Return Type**
 
---- 
+## 
 
 ### graph_decision_path()
 
@@ -157,10 +153,12 @@ Accepts degree_increment.
 
 **Return Type**
 
---- 
+## 
 
 
 ### graph_node()
+
+###### test h6
 
 **Description**
 
