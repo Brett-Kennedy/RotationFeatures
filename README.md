@@ -62,109 +62,146 @@ avg_test_score = test_scores.mean()
 
 ## RotationFeatures Methods
 
-#### fit()
+### fit()
 
-##### Description
+fit() simply determines the number of features that will be generated. As the new features are based on rotations, they do not depend on any specific data that must be fit to. 
 
-###### fit() simply determines the number of features that will be generated. As the new features are based on rotations, they do not depend on any specific data that must be fit to. 
+```
+fit(X)
+```
 
-##### Parameters
+#### Parameters
 
-###### X: matrix
+**X**: matrix
+
+#### Return Type
+
+Returns self
+## 
+
+### transform()
+
+Generates the new features based on the specifed degree_increment.
+
+```
+transform(X)
+```
+
+#### Parameters
+
+**X**: matrix
 
 ##### Return Type
 
-###### Returns self
+Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
 ## 
 
-#### transform()
+### fit_transform()
 
-##### Description
+Simply calls fit() and transform()
 
-###### Generates the new features based on the specifed degree_increment.
+```
+fit_transform(X)
+```
 
-##### Parameters
+#### Parameters
 
-###### X: matrix
+**X**: matrix
 
-##### Return Type
+**y**: Unused
 
-###### Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+**fit_params**: Unused
+
+#### Return Type
+
+Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
 ## 
 
-#### fit_transform()
+### get_feature_names()
 
-##### Description
+```
+get_feature_names()
+```
 
-###### Calls fit() and transform()
-
-##### Parameters
-
-###### X: matrix
-
-###### y: Unused
-
-###### fit_params: Unused
-
-##### Return Type
-
-###### Returns a new pandas dataframe containing the same rows and columns as the passed matrix X, as well as the additional columns created. 
+Returns the list of column names. This includes the original columns and the generated columns. The generated columns have names of the form: "R_" followed by a count. The generated columns have little meaning in themselves except as described as a rotation of two original features. 
 ## 
 
-#### get_feature_names()
+### get_feature_sources()
 
-####### Returns the list of column names. This includes the original columns and the generated columns. The generated columns have names of the form: "R_" followed by a count. The generated columns have little meaning in themselves except as described as a rotation of two original features. 
-## 
+Returns the list of column sources. This has an element for each column. For the original columns, this is empty and for generated columns, this lists the pair of original columns from which it was generated. 
 
-#### get_feature_sources()
-
-###### Returns the list of column sources. This has an element for each column. For the original columns, this is empty and for generated columns, this lists the pair of original columns from which it was generated. 
+```
+get_feature_sources()
+```
 ##
 
 ### get_params()
 
-###### Returns the degree_increment.
+Returns the degree_increment.
+
+```
+get_params(deep=True)
+```
+
 ## 
 
 ### set_params()
 
 Accepts degree_increment.
-
+```
+set_params(**params)
+```
 ## 
 
 ## GraphTwoDimTree Methods
 
+### graph_node()
+Presents a series of plots describing a single node. This shows: 
+1. A bar chart giving the count for each target class
+2. A histogram for the distribution of each target class
+3. Optionally repeat 2. on a log scale.
+4. The 2d space of two generated features
+5. The original 2d space of the two original features before rotation
+
+```
+graph_node(
+  node_idx, 
+  row=None, 
+  show_log_scale=False, 
+  show_combined_2d_space=False):
+```
+
+#### Return Type
+
+
 
 ### graph_tree()
+Calls graph_node() for all nodes in the tree. This, then, presents the full tree in order. 
 
-**Description**
+```
+graph_tree(
+  show_log_scale=False, 
+  show_combined_2d_space=False)
+```
+#### Parameters
 
-**Parameters**
-
-**Return Type**
-
+#### Return Type
 ## 
+
+
 
 ### graph_decision_path()
+Similar to graph_node(), but presents only the nodes appearing on the decision path for the specified row. 
+```
+graph_decision_path(row=None, show_log_scale=False, show_combined_2d_space=False)
+```
 
-**Description**
+#### Parameters
 
-**Parameters**
-
-**Return Type**
-
+#### Return Type
 ## 
 
 
-### graph_node()
-
-###### test h6
-
-**Description**
-
-**Parameters**
-
-**Return Type**
 
 ## Summary of Accuracy & Model Sizes
 
