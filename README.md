@@ -53,6 +53,18 @@ Note, we define an improvement as:
 
 This is such that improvements in stability and interpretability are only relevant if the accuracy increases or remains the same. 
 
+## Results
+The results of one execution of Accuracy_Test_Rotation_Features are provided in the Results folder. This is an execution for 100 random classification datasets. The summarized results are duplicated here:
+
+| Model	| Feature Engineering Description	| Avg f1_macro	| Avg. Train-Test Gap	| Avg. Fit Time	Avg. | Complexity | 
+| ----- | ----- | ----- | ----- | ----- | ----- | 
+| DT	| Original Features	| 0.634 | 	0.359 | 	0.017 | 	251.893 | 
+| DT	| Rotation-based Features	| 0.637 |	0.356 | 3.183 | 187.886 | 
+
+![Line Plot](https://github.com/Brett-Kennedy/RotationFeatures/blob/main/Results/results_17_08_2021_14_29_56_plot.png)
+
+These demonstrate that on the whole the accuracy is about the same with and without RotationFeatures, though, as expected, numereous datasets do benefit from use of the tool. As well, the complexity is consistently far lower, making this tool often quite useful for XAI purposes. 
+
 ## Examples
 
 Given X and y, 
