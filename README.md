@@ -35,12 +35,12 @@ Further, we believe, in many cases, capturing interactions based on pairs of fea
 
 Three example notebooks are provided. 
 
-**Simple Test Rotation-Based Feature Generation** 
+[**Simple Test Rotation-Based Feature Generation** ](https://github.com/Brett-Kennedy/RotationFeatures/blob/main/examples/Simple_Test_Rotation-Based_Feature_Generation.ipynb)
 This notebook provides examples using RotationFeatures with three toy datasets from sklearn. This is primarily to provide simple examples of using the tool, but also gives examples of the accuracy and interpretability gained, measured by the macro f1 score and tree size respectively. It compares quite favourably compared to using the same model with only the original features. 
 
-**Visualization Examples**. This notebook provides examples of visualizing decision trees generated using RotationFeatures. This uses the GraphTwoDimTree class also included in this package. 
+[**Visualization Examples**](https://github.com/Brett-Kennedy/RotationFeatures/blob/main/examples/Visualization_Examples.ipynb). This notebook provides examples of visualizing decision trees generated using RotationFeatures. This uses the GraphTwoDimTree class also included in this package. 
 
-**Accuracy Test Rotation Features** This notebook provides code to recreate additional tests, performed on numerous publicly-available datasets, showing relatively consistent results. As with PolynomialFeatures, and any other feature generation tool, this works for some datasets considerably better than for others, but it frequently improves upon the original features. This requires installing the DatasetsEvaluator tool. 
+[**Accuracy Test Rotation Features**](https://github.com/Brett-Kennedy/RotationFeatures/blob/main/examples/Accuracy_Test_RotationFeatures.py) This notebook provides code to recreate additional tests, performed on numerous publicly-available datasets, showing relatively consistent results. As with PolynomialFeatures, and any other feature generation tool, this works for some datasets considerably better than for others, but it frequently improves upon the original features. This requires installing the DatasetsEvaluator tool. 
 
 Note, we define an improvement as:
 - Increase in accuracy; and/or
