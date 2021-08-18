@@ -31,6 +31,10 @@ The limitation to 2d spaces also keeps the tool more scalable, as it must consid
 
 Further, we believe, in many cases, capturing interactions based on pairs of features is sufficent to capture the majority of feature insteractions in the dataset. This is not always the case, and more involved feature interactions must be captured to significantly improve accuracy in some cases, but we believe it is a common scenario for 2-way interactions to be sufficient. 
 
+### Visualizations
+
+The RotateFeatures package inlcudes a class called GraphTwoDimTree, which allows users to visualize an sklearn decision tree. If the tree was created using RotationFeatures, visualizations of the rotated 2d spaces at each node are provided, which allows clear explanations of each decision: the splits are simply an oblique linear cut in the original 2d space, which is also presented. 
+
 ## Example Notebooks
 
 Three example notebooks are provided. 
