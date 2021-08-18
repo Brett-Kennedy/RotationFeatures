@@ -101,8 +101,8 @@ class RotationFeatures:
 		self.is_numeric_arr = []
 		self.feature_names_ = []		
 		
-		self.scaler_ = MinMaxScaler()
-		self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)     
+		#self.scaler_ = MinMaxScaler()
+		#self.scaled_X_df = pd.DataFrame(self.scaler_.fit_transform(extended_X), columns=extended_X.columns)
 		
 		# Determine which features may be considered numeric
 		if self.determine_numeric_features:
