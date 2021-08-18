@@ -45,7 +45,7 @@ This notebook provides examples using RotationFeatures with three toy datasets f
 Note, we define an improvement as:
 - Increase in accuracy; and/or
 - Greater stability (smaller std dev in accuracy among the cross validation folds); and/or
-- In the case of decision trees, smaller trees (allowing for greater interpretability. Similar metrics may be used for other interpretable models. )
+- In the case of decision trees, smaller trees (allowing for greater interpretability. Similar metrics may be used for other interpretable models.)
 
 This is such that improvements in stability and interpretability are only relevant if the accuracy increases or remains the same. 
 
