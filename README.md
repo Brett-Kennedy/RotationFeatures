@@ -35,7 +35,9 @@ Further, we believe, in many cases, capturing interactions based on pairs of fea
 
 ### Visualizations
 
-The RotateFeatures package inlcudes a class called GraphTwoDimTree, which allows users to visualize an sklearn decision tree. If the tree was created using RotationFeatures, visualizations of the rotated 2d spaces at each node are provided, which allows clear explanations of each decision: the splits are simply an oblique linear cut in the original 2d space, which is also presented. 
+The RotateFeatures package inlcudes a class called GraphTwoDimTree, which allows users to visualize an sklearn decision tree. If the tree was created using RotationFeatures, visualizations of the rotated 2d spaces at each node are provided, which allows clear explanations of each decision: the splits are simply an oblique linear cut in the original 2d space, which is also presented. An example notebook provides an example. The following image is an example, where a classification problem requires splitting the dataspace into two, but an axis-parallel split would be sub-optimal, and would require multiple splits. RotationFeatures allows splitting on an angle, which is done here. 
+
+![Scatter Plot](https://github.com/Brett-Kennedy/RotationFeatures/blob/main/Images/example_1.jpg)
 
 ## Example Notebooks
 
