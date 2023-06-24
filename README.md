@@ -1,10 +1,10 @@
 # RotationFeatures 
 
-RotationFeatures is a feature generation tool that constructs sets of pairs of new features based on rotations of existing pairs of features. The tool follows a similar API signature as sklearn's PolynomialFeatures.
+RotationFeatures is a feature generation tool that constructs sets of new features based on rotations of existing pairs of features. The tool follows a similar API signature as sklearn's PolynomialFeatures.
 
-RotationFeatures is designed specifically for interpretable models such as Decision Trees, Decision Tables, Rule Lists and Rule Sets, though may be used with any model type where feature generation may be useful. Though the features generated may have lower comprehensibility than the original features from which they were created, they may be readily visualized, which often supports greater overall interpertability and allows this tool to contribute to the field of eXplainable AI (XAI). 
+RotationFeatures is designed specifically for interpretable models such as Decision Trees, Decision Tables, Rule Lists and Rule Sets, but may be used with any model type where feature generation may be useful. Though the features generated may have lower comprehensibility than the original features from which they were created, they may be readily visualized, which often supports greater overall interpertability and allows this tool to contribute to the field of eXplainable AI (XAI). 
 
-Although conceptually simple, this tool generates features that often improve the accuracy or interpretability of interpretable models. The majority of testing was with decision trees, and all examples below relate to decision trees (arguably among the most interpretable of models), though this also appears promising with other rules-based models. It, however, typically does not enhance the accuracy of more complex (and uninterpretable) models such as RandomForests, boosted models, and neural networks. 
+Although conceptually simple, this tool generates features that often improve the accuracy or interpretability of interpretable models. The majority of testing has been with decision trees, and all examples below relate to decision trees (arguably among the most interpretable of models), though this also appears promising with other rules-based models. It, however, typically does not enhance the accuracy of more complex (and uninterpretable) models such as RandomForests, boosted models, and neural networks. 
 
 ## Installation
 
@@ -14,7 +14,7 @@ pip install RotationFeatures
 
 ## Description
 
-The idea behind RotationFeatures, taking classification as an example, is that often, when considering two or more dimensions, an ideal boundary between the target classes is at an oblique angle, and not parallel to any of the axes. Thus, models such as decision trees must use sub-optimal axis-parallel boundaries, which can lead to lower accuracy and larger trees, thus decreasing their interpretability. 
+The idea behind RotationFeatures, taking classification as an example, is that often, when considering two or more dimensions, an ideal boundary between the target classes is at an oblique angle, and not parallel to any of the axes. Thus, models such as decision trees must use sub-optimal axis-parallel boundaries, which can lead to lower accuracy and larger trees, thus decreasing their interpretability. That is, decision trees must split, at each node, at some split point for a single feature, so can not necessarily split the data in the most effective way. This may not necessarily lead to lower accuracy, as with sufficient depth, any relationship may be modelled by trees, but does lead to lower interpretability, as trees are larger and the splits may be unintuitive. 
 
 When used with decision trees, RotationFeatures effectively provides a simple, efficient, sklearn-compatible method to generate oblique trees, a now somewhat-forgotten technique to induce more powerful decision trees. Oblique decision trees are similar to standard decision trees, but allow dividing the dataspace into two subspaces with a hyperplane places at any arbitrary position and angle. There are numerous other methods proposed to generate oblique decision trees, but this provides an efficient python-based solution, based on rotating each 2d space various amounts, and selecting the optimal split point based on this. 
 
@@ -227,10 +227,16 @@ graph_decision_path(row=None, show_log_scale=False, show_combined_2d_space=False
 
 ## Summary of Accuracy & Model Sizes
 
-The gain in accuracy can be sensitive to the number of different degrees of rotation used. 
+RotationFeatures is not intended, in itself, to make Decision Trees and other interpretable models competitive with other models in terms of accuracy, though may in some cases. For the most part, state of the art models such as CatBoost and XGBoost are more accurate and should be used where interpretability is not an issue. The intention with RotationFeatures is simply to increase the accuracy and interpretability of interpretable models, particularly decision trees. 
 
-Overall, both the toy and the real (publicly-available) datasets showed some improvement in at least one sense for at least one setting for the feature engineering. It often, though, required creating over 10,000 features (eg Breast Cancer rotated in 4 degree increments.)
+Overall, both the toy and the real (publicly-available) datasets showed some improvement in at least one sense (accuracy or interpretability), and very often for interpretability. This did require some tuning and often required generating a large number of features. For example, the breast cancer dataset, rotating each 2d space by increments of 4 degrees, produces over 10,000 features. It should be noted though: though the large number of features with some parameter settings can be slow to evaluate, the tendency to overfitting is substantially lower than for other feature engineering techniques such as those based on arithmetic operations, as the engineered features remain similar variations of the original features. 
 
-Testing was done using DatasetsEvaluator, which allows for large-scale unbiased evaluation of tools on publicly-avaliable datasets, and this found a noticable improvement in accuracy and/or interpretability for numerous datasets. Overall accuracy was similar with and without RotationFeatures, demonstrating it is also often not useful. 
+Testing was done using DatasetsEvaluator, which allows for large-scale unbiased evaluation of tools on publicly-avaliable datasets, and this found a noticable improvement in accuracy and/or interpretability for numerous datasets. RotationFeatures was found to raise prediction accuracy with some datasets, and lower it with others, with overall accuracy similar between the two methods. We can conclude then, with respect to accuracy, RotationFeatures can often be worth trying with prediction problems using DecisionTrees and other models, and may help in some cases. Most likely it is most helpful where the split between classes (in the case of classification problems) is distinctly at oblique angles, and splitting on one original feature at a time can only slowly approximate the ideal (oblique) split. 
 
-RotationFeatures is not intended, in itself, to make Decision Trees and other interpretable models competitive with other models in terms of accuracy, though may in many cases make them comparable. The intention is simply to increase the accuracy and interpretability of interpretable models. 
+The gain in accuracy can be sensitive to the degrees of rotation used. It may take some tuning to develop the most accurate and concise tree, but this can be one typically quite quickly.  
+
+
+
+
+
+
